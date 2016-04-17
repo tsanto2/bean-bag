@@ -155,7 +155,7 @@ public class PlayerMove : MonoBehaviour {
         Physics2D.gravity = grav;
     }
 
-    IEnumerator DashLeft()
+    /*IEnumerator DashLeft()
     {
         rb.velocity = new Vector3(0, 0, 0);
         Vector2 grav = Physics2D.gravity;
@@ -188,7 +188,7 @@ public class PlayerMove : MonoBehaviour {
         rb.velocity = new Vector3(0, 0, 0);
         grav.y = -9.81f;
         Physics2D.gravity = grav;
-    }
+    }*/
 
     IEnumerator DoDodge()
     {
