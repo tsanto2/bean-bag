@@ -44,6 +44,9 @@ public class PlayerMove : MonoBehaviour {
         Dash();
         Dodge();
         SwitchWeap();
+
+        if (health <= 0)
+            Application.LoadLevel(Application.loadedLevel);
 	}
 
     void FixedUpdate()
