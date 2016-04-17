@@ -6,7 +6,7 @@ public class ScuttlerBehavior : MonoBehaviour {
 
     private GameObject position;
     private Rigidbody2D rb;
-    private GameObject player;
+    private PlayerMove player;
     private float initX;
     private float yTol = 1;
     private bool movingRight;
@@ -17,25 +17,27 @@ public class ScuttlerBehavior : MonoBehaviour {
     public float speed;
     public float lungePower;
     public float lungeDist;
+    public int health;
 
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
+            player.health -= 10;
             Destroy(this.gameObject);
         }
     }
 
 
     void Start() {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindObjectOfType<PlayerMove>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         movingRight = true;
         movingLeft = false;
 
         initX = rb.transform.position.x;
-
+        health = 1;
 
     }
 
