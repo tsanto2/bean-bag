@@ -37,9 +37,19 @@ public class PlayerMove : MonoBehaviour {
         canDash = false;
         weapCount = 0;
         health = 100;
-        canBoom = true;
-        canShoot = true;
-	}
+        if (Application.loadedLevelName == "Test")
+        {
+            canBoom = true;
+            canShoot = true;
+        }
+        if (Application.loadedLevelName == "BossFight")
+        {
+            canBoom = false;
+            canShoot = false;
+            canDodge = true;
+            canDash = true;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
