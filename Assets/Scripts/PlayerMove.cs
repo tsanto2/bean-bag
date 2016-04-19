@@ -16,6 +16,7 @@ public class PlayerMove : MonoBehaviour {
     public bool dashed;
     public bool dodged;
     public bool canMove;
+    public bool onMPlat;
 
     public bool canDash;
     public bool canDodge;
@@ -24,17 +25,19 @@ public class PlayerMove : MonoBehaviour {
 
     public Rigidbody2D rb;
     private DrillSpawn ds;
+    private MovingPlatformScript mPlat;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         ds = GameObject.FindObjectOfType<DrillSpawn>();
+        mPlat = GameObject.FindObjectOfType<MovingPlatformScript>();
         speed = 6.0f;
         jumpForce = 3250.0f;
         facingRight = true;
         dodged = true;
         canMove = true;
-        canDash = false;
+        canDash = true;
         weapCount = 0;
         health = 100;
         if (Application.loadedLevelName == "Test")
@@ -61,11 +64,19 @@ public class PlayerMove : MonoBehaviour {
 
         if (health <= 0)
             Application.LoadLevel(Application.loadedLevel);
+
 	}
 
     void FixedUpdate()
     {
         MoveHoriz();
+        if (onMPlat)
+        {
+            transform.Translate(Vector3.right * 2.25f * Time.deltaTime);
+            Vector3 newPos = transform.position;
+            newPos.y = mPlat.transform.position.y + .875f;
+            transform.position = newPos;
+        }
     }
 
     void RayCast()
@@ -234,5 +245,29 @@ public class PlayerMove : MonoBehaviour {
         canMove = true;
         yield return new WaitForSeconds(1.5f);
         dodged = true;
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Lava")
+        {
+            Application.LoadLevel(Application.loadedLevel);
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "MovingPlat")
+        {
+            onMPlat = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "MovingPlat")
+        {
+            onMPlat = false;
+        }
     }
 }
