@@ -25,12 +25,20 @@ public void OnCollisionEnter2D(Collision2D collision)
             Destroy(this.gameObject);
         }
 
-        if (collision.gameObject.tag == "Bullet")
+        if (collision.gameObject.tag == "Invincible")
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Bullet")
         {
             Destroy(this.gameObject);
         }
 
-        if (collision.gameObject.tag == "Explosion")
+        if (col.tag == "Drill")
         {
             Destroy(this.gameObject);
         }
