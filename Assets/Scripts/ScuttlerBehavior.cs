@@ -20,16 +20,6 @@ public class ScuttlerBehavior : MonoBehaviour {
     public int health;
 
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            player.health -= 10;
-            Destroy(this.gameObject);
-        }
-    }
-
-
     void Start() {
         player = GameObject.FindObjectOfType<PlayerMove>();
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -146,4 +136,26 @@ public class ScuttlerBehavior : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            player.health -= 10;
+            Destroy(this.gameObject);
+        }
+
+        if (collision.gameObject.tag == "Invincible")
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Bullet" || col.tag == "Explosion" || col.tag == "Drill")
+        {
+            Destroy(gameObject);
+        }
+    }
 }

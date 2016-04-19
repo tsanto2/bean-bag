@@ -19,6 +19,8 @@ public class PlayerMove : MonoBehaviour {
 
     public bool canDash;
     public bool canDodge;
+    public bool canBoom;
+    public bool canShoot;
 
     public Rigidbody2D rb;
     private DrillSpawn ds;
@@ -130,6 +132,14 @@ public class PlayerMove : MonoBehaviour {
         if (Input.GetButtonDown("Y"))
         {
             weapCount += 1;
+            if (weapCount == 2 && !canBoom)
+            {
+                weapCount = 0;
+            }
+            if (weapCount == 0 && !canShoot)
+            {
+                weapCount = 1;
+            }
             if (weapCount == 3)
                 weapCount = 0;
         }
