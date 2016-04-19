@@ -42,6 +42,11 @@ public void OnCollisionEnter2D(Collision2D collision)
         {
             Destroy(this.gameObject);
         }
+
+        if (col.tag == "Explosion")
+        {
+            Destroy(this.gameObject);
+        }
     }
 
 

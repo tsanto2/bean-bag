@@ -37,6 +37,8 @@ public class PlayerMove : MonoBehaviour {
         canDash = false;
         weapCount = 0;
         health = 100;
+        canBoom = true;
+        canShoot = true;
 	}
 	
 	// Update is called once per frame

@@ -19,8 +19,8 @@ public class WeapDrop : MonoBehaviour {
     {
         if (col.tag == "Player" && this.tag == "Boom4Dash")
         {
-
             player.canDash = true;
+            player.canBoom = false;
         }
     }
 }
