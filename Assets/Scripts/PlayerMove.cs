@@ -10,6 +10,8 @@ public class PlayerMove : MonoBehaviour {
     public int health;
     public float speed;
     public float jumpForce;
+    public Vector3 jumpSpot;
+    public Vector3 spawnPoint;
     public bool isGrounded;
     public bool rayRight;
     public bool facingRight;
@@ -17,6 +19,7 @@ public class PlayerMove : MonoBehaviour {
     public bool dodged;
     public bool canMove;
     public bool onMPlat;
+    public bool isKilled;
 
     public bool canDash;
     public bool canDodge;
@@ -32,6 +35,7 @@ public class PlayerMove : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         ds = GameObject.FindObjectOfType<DrillSpawn>();
         mPlat = GameObject.FindObjectOfType<MovingPlatformScript>();
+        spawnPoint = transform.position;
         speed = 6.0f;
         jumpForce = 3250.0f;
         facingRight = true;
@@ -61,6 +65,13 @@ public class PlayerMove : MonoBehaviour {
         Dash();
         Dodge();
         SwitchWeap();
+
+        if (isKilled)
+        {
+            transform.position = jumpSpot;
+            isKilled = false;
+            health -= 10;
+        }
 
         if (health <= 0)
             Application.LoadLevel(Application.loadedLevel);
@@ -171,6 +182,8 @@ public class PlayerMove : MonoBehaviour {
     IEnumerator DashRight()
     {
         Vector2 dashDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if ((Input.GetAxisRaw("Horizontal") < 0.1f && Input.GetAxisRaw("Horizontal") > -0.1f) && (Input.GetAxisRaw("Vertical") < 0.1f && Input.GetAxisRaw("Vertical") > -0.1f))
+            dashDir = Vector2.up;
         rb.velocity = new Vector3(0, 0, 0);
         Vector2 grav = Physics2D.gravity;
         grav.y = 0;
@@ -255,6 +268,14 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Boss")
+        {
+            health -= 10;
+        }
+    }
+
     void OnCollisionStay2D(Collision2D col)
     {
         if (col.gameObject.tag == "MovingPlat")
@@ -268,6 +289,15 @@ public class PlayerMove : MonoBehaviour {
         if (col.gameObject.tag == "MovingPlat")
         {
             onMPlat = false;
+        }
+
+        if (col.gameObject.tag == "Platform")
+        {
+            jumpSpot = this.transform.position;
+            if (facingRight)
+                jumpSpot.x -= 1.0f;
+            else
+                jumpSpot.x += 1.0f;
         }
     }
 }
