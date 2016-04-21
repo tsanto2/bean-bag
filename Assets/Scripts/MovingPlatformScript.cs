@@ -14,11 +14,6 @@ public class MovingPlatformScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        canMove = true;
-        if (canMove && !isMoving)
-        {
-            StartCoroutine(HorizPlatMotion());
-        }
     }
 
     IEnumerator HorizPlatMotion()
@@ -46,5 +41,17 @@ public class MovingPlatformScript : MonoBehaviour {
         }
         yield return new WaitForSeconds(.75f);
         StartCoroutine(VertPlatMotion());
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            canMove = true;
+            if (canMove && !isMoving)
+            {
+                StartCoroutine(HorizPlatMotion());
+            }
+        }
     }
 }

@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour {
         facingRight = true;
         dodged = true;
         canMove = true;
-        canDash = true;
+        canDash = false;
         weapCount = 0;
         health = 100;
         if (Application.loadedLevelName == "Test")
