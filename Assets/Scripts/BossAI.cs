@@ -63,10 +63,23 @@ public class BossAI : MonoBehaviour {
     {
         if (col.collider.tag == "Drill")
         {
+            player.canMove = false;
             shotCount -= 5;
+            player.rb.velocity = new Vector3(0, 0, 0);
+            if (player.facingRight)
+                player.rb.AddForce((Vector3.left + Vector3.up) * player.jumpForce * 0.5f);
+            if (!player.facingRight)
+                player.rb.AddForce((Vector3.right + Vector3.up) * player.jumpForce * 0.5f);
+            StartCoroutine(Wait());
             if (!flashing)
                 StartCoroutine(hitFlash());
         }
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(0.5f);
+        player.canMove = true;
     }
 
     IEnumerator RightSidePhase()
