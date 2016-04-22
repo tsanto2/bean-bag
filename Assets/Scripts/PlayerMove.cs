@@ -10,23 +10,32 @@ public class PlayerMove : MonoBehaviour {
     public int health;
     public float speed;
     public float jumpForce;
+    public Vector3 jumpSpot;
+    public Vector3 spawnPoint;
     public bool isGrounded;
     public bool rayRight;
     public bool facingRight;
     public bool dashed;
     public bool dodged;
     public bool canMove;
+    public bool onMPlat;
+    public bool isKilled;
 
     public bool canDash;
     public bool canDodge;
+    public bool canBoom;
+    public bool canShoot;
 
     public Rigidbody2D rb;
     private DrillSpawn ds;
+    private MovingPlatformScript mPlat;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         ds = GameObject.FindObjectOfType<DrillSpawn>();
+        mPlat = GameObject.FindObjectOfType<MovingPlatformScript>();
+        spawnPoint = transform.position;
         speed = 6.0f;
         jumpForce = 3250.0f;
         facingRight = true;
@@ -35,7 +44,20 @@ public class PlayerMove : MonoBehaviour {
         canDash = false;
         weapCount = 0;
         health = 100;
-	}
+        if (Application.loadedLevelName == "Test")
+        {
+            canBoom = true;
+            canShoot = true;
+        }
+        if (Application.loadedLevelName == "BossFight")
+        {
+            canBoom = false;
+            canShoot = false;
+            canDodge = true;
+            canDash = true;
+            weapCount = 1;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -45,13 +67,33 @@ public class PlayerMove : MonoBehaviour {
         Dodge();
         SwitchWeap();
 
+        if (isKilled)
+        {
+            transform.position = jumpSpot;
+            isKilled = false;
+            health -= 10;
+        }
+
         if (health <= 0)
-            Application.LoadLevel(Application.loadedLevel);
+        {
+            transform.position = spawnPoint;
+            health = 100;
+        }
+
+        if (health > 100)
+            health = 100;
 	}
 
     void FixedUpdate()
     {
         MoveHoriz();
+        if (onMPlat)
+        {
+            transform.Translate(Vector3.right * 2.25f * Time.deltaTime);
+            Vector3 newPos = transform.position;
+            newPos.y = mPlat.transform.position.y + .875f;
+            transform.position = newPos;
+        }
     }
 
     void RayCast()
@@ -130,6 +172,14 @@ public class PlayerMove : MonoBehaviour {
         if (Input.GetButtonDown("Y"))
         {
             weapCount += 1;
+            if (weapCount == 2 && !canBoom)
+            {
+                weapCount = 0;
+            }
+            if (weapCount == 0 && !canShoot)
+            {
+                weapCount = 1;
+            }
             if (weapCount == 3)
                 weapCount = 0;
         }
@@ -138,6 +188,8 @@ public class PlayerMove : MonoBehaviour {
     IEnumerator DashRight()
     {
         Vector2 dashDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if ((Input.GetAxisRaw("Horizontal") < 0.1f && Input.GetAxisRaw("Horizontal") > -0.1f) && (Input.GetAxisRaw("Vertical") < 0.1f && Input.GetAxisRaw("Vertical") > -0.1f))
+            dashDir = Vector2.up;
         rb.velocity = new Vector3(0, 0, 0);
         Vector2 grav = Physics2D.gravity;
         grav.y = 0;
@@ -212,5 +264,53 @@ public class PlayerMove : MonoBehaviour {
         canMove = true;
         yield return new WaitForSeconds(1.5f);
         dodged = true;
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Lava")
+        {
+            transform.position = spawnPoint;
+            Vector3 mPos = mPlat.transform.position;
+            mPos.x = 348.5f;
+            mPlat.canMove = false;
+            mPlat.reset = true;
+            mPlat.StopCo();
+            mPlat.isMoving = false;
+            mPlat.transform.position = mPos;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Boss")
+        {
+            health -= 10;
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "MovingPlat")
+        {
+            onMPlat = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "MovingPlat")
+        {
+            onMPlat = false;
+        }
+
+        if (col.gameObject.tag == "Platform")
+        {
+            jumpSpot = this.transform.position;
+            if (facingRight)
+                jumpSpot.x -= 1.0f;
+            else
+                jumpSpot.x += 1.0f;
+        }
     }
 }
