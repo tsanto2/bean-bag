@@ -21,6 +21,25 @@ public class WeapDrop : MonoBehaviour {
         {
             player.canDash = true;
             player.canBoom = false;
+            if (player.weapCount == 2)
+            {
+                player.weapCount = 0;
+            }
+            player.spawnPoint = transform.position;
+            player.spawnPoint.y = 0;
+            Destroy(gameObject);
+        }
+        if (col.tag == "Player" && this.tag == "Gun4Dodge")
+        {
+            player.canDodge = true;
+            player.canShoot = false;
+            if (player.weapCount == 0)
+            {
+                player.weapCount = 1;
+            }
+            player.spawnPoint = transform.position;
+            player.spawnPoint.y = 66.0f;
+            Destroy(gameObject);
         }
     }
 }

@@ -74,8 +74,13 @@ public class PlayerMove : MonoBehaviour {
         }
 
         if (health <= 0)
-            Application.LoadLevel(Application.loadedLevel);
+        {
+            transform.position = spawnPoint;
+            health = 100;
+        }
 
+        if (health > 100)
+            health = 100;
 	}
 
     void FixedUpdate()
@@ -264,7 +269,7 @@ public class PlayerMove : MonoBehaviour {
     {
         if (col.tag == "Lava")
         {
-            Application.LoadLevel(Application.loadedLevel);
+            transform.position = spawnPoint;
         }
     }
 
