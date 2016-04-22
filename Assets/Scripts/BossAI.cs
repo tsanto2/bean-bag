@@ -25,7 +25,7 @@ public class BossAI : MonoBehaviour {
         rigidbody = gameObject.GetComponent<Rigidbody2D>();
         player = GameObject.FindObjectOfType<PlayerMove>();
         
-        shotCount = 30;
+        shotCount = 50;
         speed = 5.0f;
         health = 100.0f;
         walkRight = false;
@@ -73,6 +73,17 @@ public class BossAI : MonoBehaviour {
             StartCoroutine(Wait());
             if (!flashing)
                 StartCoroutine(hitFlash());
+        }
+
+        if (col.collider.tag == "Player")
+        {
+            player.rb.velocity = new Vector3(0, 0, 0);
+            if (facingRight)
+                player.rb.AddForce((Vector3.right + Vector3.up) * player.jumpForce * 0.5f);
+            if (!facingRight)
+                player.rb.AddForce((Vector3.left + Vector3.up) * player.jumpForce * 0.5f);
+            StartCoroutine(Wait());
+
         }
     }
 

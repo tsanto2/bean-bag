@@ -41,5 +41,9 @@ public class WeapDrop : MonoBehaviour {
             player.spawnPoint.y = 66.0f;
             Destroy(gameObject);
         }
+        if (col.tag == "Player" && this.tag == "BossTransition")
+        {
+            Application.LoadLevel("BossFight");
+        }
     }
 }

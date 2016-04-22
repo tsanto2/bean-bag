@@ -55,6 +55,7 @@ public class PlayerMove : MonoBehaviour {
             canShoot = false;
             canDodge = true;
             canDash = true;
+            weapCount = 1;
         }
     }
 	
@@ -270,6 +271,13 @@ public class PlayerMove : MonoBehaviour {
         if (col.tag == "Lava")
         {
             transform.position = spawnPoint;
+            Vector3 mPos = mPlat.transform.position;
+            mPos.x = 348.5f;
+            mPlat.canMove = false;
+            mPlat.reset = true;
+            mPlat.StopCo();
+            mPlat.isMoving = false;
+            mPlat.transform.position = mPos;
         }
     }
 

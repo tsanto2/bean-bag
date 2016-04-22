@@ -6,6 +6,7 @@ public class MovingPlatformScript : MonoBehaviour {
     public bool canMove;
     public bool isMoving;
     public bool isUnder;
+    public bool reset;
 
 	// Use this for initialization
 	void Start () {
@@ -16,10 +17,16 @@ public class MovingPlatformScript : MonoBehaviour {
 	void Update () {
     }
 
-    IEnumerator HorizPlatMotion()
+    public void StopCo()
     {
-        isMoving = true;
-        if (transform.position.x <= 465.0f)
+        StopCoroutine("HorizPlatMotion");
+    }
+
+    public IEnumerator HorizPlatMotion()
+    {
+        if (!reset)
+            isMoving = true;
+        if (transform.position.x <= 465.0f && canMove && !reset)
         {
             transform.Translate(Vector3.right * 2.25f * Time.deltaTime);
             yield return new WaitForSeconds(0);
@@ -48,6 +55,7 @@ public class MovingPlatformScript : MonoBehaviour {
         if (col.gameObject.tag == "Player")
         {
             canMove = true;
+            reset = false;
             if (canMove && !isMoving)
             {
                 StartCoroutine(HorizPlatMotion());
